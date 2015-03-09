@@ -23,6 +23,24 @@ Demo
     $ qb d.log tamura-yukari.log random.log
     ```
 
+Motivation
+------------------------------
+
+So far, Multiple file display can be even `tail -f`.
+
+![Demo](./images/tailf.gif)
+
+But, I wanted to see in a similar format as the `heroku logs --tail`.
+
+```
+app[web.1]: foo bar baz
+app[worker.1]: pizza pizza
+app[web.1]: foo bar baz
+app[web.2]: just do eat..soso..
+.
+.
+```
+
 License
 ------------------------------
 
