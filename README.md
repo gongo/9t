@@ -23,6 +23,13 @@ Demo
     $ qb d.log tamura-yukari.log random.log
     ```
 
+Installation
+------------------------------
+
+```
+$ go install github.com/gongo/qb
+```
+
 Motivation
 ------------------------------
 
