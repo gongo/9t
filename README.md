@@ -20,7 +20,7 @@ Demo
 1. Run
 
     ```
-    $ qb d.log tamurayukari.log random.log
+    $ qb d.log tamura-yukari.log random.log
     ```
 
 License
