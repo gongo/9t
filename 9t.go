@@ -18,7 +18,10 @@ func main() {
 		}
 
 		wg.Add(1)
-		go t.do(&wg)
+		go func() {
+			t.do()
+			wg.Done()
+		}()
 	}
 
 	wg.Wait()

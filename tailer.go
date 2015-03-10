@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"sync"
 
 	"github.com/ActiveState/tail"
 	"github.com/mattn/go-colorable"
@@ -39,8 +38,7 @@ func newTailer(filename string, colorCode int, maxWidth int) (*tailer, error) {
 	}, nil
 }
 
-func (t tailer) do(wg *sync.WaitGroup) {
-	defer wg.Done()
+func (t tailer) do() {
 	for line := range t.Lines {
 		fmt.Fprintf(colorableOutput, "\x1b[%dm%*s\x1b[0m: %s\n", t.colorCode, t.maxWidth, t.name(), line.Text)
 	}
