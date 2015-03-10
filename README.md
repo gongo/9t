@@ -6,21 +6,21 @@
 Demo
 ------------------------------
 
-![Demo](./images/qb.gif)
+![Demo](./images/9t.gif)
 
 1. Preparation
 
     ```sh
     $ yukari() { echo '世界一かわいいよ!!' }
-    $ while :; do       yukari >> tamura-yukari.log ; sleep 0.3 ; done
-    $ while :; do echo $RANDOM >> random.log        ; sleep 0.5 ; done
+    $ while :; do       yukari >> tamura-yukari.log ; sleep 0.2 ; done
+    $ while :; do echo $RANDOM >> random.log        ; sleep 3   ; done
     $ while :; do         date >>      d.log        ; sleep 1   ; done
     ```
 
 1. Run
 
     ```
-    $ 9t d.log tamura-yukari.log random.log
+    $ 9t tamura-yukari.log random.log d.log
     ```
 
 Installation
