@@ -1,7 +1,7 @@
-QB
+9t
 ==============================
 
-QB (`q-bi` that nine-tailed fox in Japanese) is multi-file tailer (like `tail -f a.log b.log ...`).
+9t (nine-tailed fox in Japanese) is multi-file tailer (like `tail -f a.log b.log ...`).
 
 Demo
 ------------------------------
@@ -20,14 +20,14 @@ Demo
 1. Run
 
     ```
-    $ qb d.log tamura-yukari.log random.log
+    $ 9t d.log tamura-yukari.log random.log
     ```
 
 Installation
 ------------------------------
 
 ```
-$ go get github.com/gongo/qb
+$ go get github.com/gongo/9t
 ```
 
 Motivation
