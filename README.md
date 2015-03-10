@@ -27,7 +27,7 @@ Installation
 ------------------------------
 
 ```
-$ go install github.com/gongo/qb
+$ go get github.com/gongo/qb
 ```
 
 Motivation
