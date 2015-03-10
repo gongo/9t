@@ -7,10 +7,12 @@ import (
 	"sync"
 
 	"github.com/ActiveState/tail"
+	"github.com/mattn/go-colorable"
 )
 
 var (
 	seekInfoOnStart = &tail.SeekInfo{Offset: 0, Whence: os.SEEK_END}
+	colorableOutput = colorable.NewColorableStdout()
 )
 
 type tailer struct {
@@ -40,7 +42,7 @@ func newTailer(filename string, colorCode int, maxWidth int) (*tailer, error) {
 func (t tailer) do(wg *sync.WaitGroup) {
 	defer wg.Done()
 	for line := range t.Lines {
-		fmt.Printf("\x1b[%dm%*s\x1b[0m: %s\n", t.colorCode, t.maxWidth, t.name(), line.Text)
+		fmt.Fprintf(colorableOutput, "\x1b[%dm%*s\x1b[0m: %s\n", t.colorCode, t.maxWidth, t.name(), line.Text)
 	}
 }
 
