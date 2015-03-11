@@ -8,13 +8,10 @@ import (
 	"path"
 	"testing"
 	"time"
-
-	"github.com/ActiveState/tail"
 )
 
 var (
-	defaultSeekInfo = seekInfoOnStart
-	defaultOutput   = colorableOutput
+	defaultOutput = colorableOutput
 )
 
 func TestNewTailers(t *testing.T) {
@@ -54,8 +51,6 @@ func TestTailerDo(t *testing.T) {
 	// Stubbing output
 	output := new(bytes.Buffer)
 	colorableOutput = output
-	// Change seek to start
-	seekInfoOnStart = &tail.SeekInfo{Offset: 0, Whence: os.SEEK_SET}
 	defer revertDefault()
 
 	// Create test file
@@ -65,8 +60,6 @@ func TestTailerDo(t *testing.T) {
 	}
 	defer os.Remove(testfile.Name())
 
-	testfile.WriteString("foobar")
-
 	tailer, err := newTailer(testfile.Name(), 31, 10)
 	if err != nil {
 		t.Fatal(err)
@@ -74,21 +67,24 @@ func TestTailerDo(t *testing.T) {
 
 	go tailer.Do()
 
-	timeout := time.After(300 * time.Millisecond)
-	<-timeout
+	interval := time.Tick(100 * time.Millisecond)
+	<-interval
+	testfile.WriteString("foobar")
+	<-interval
 	tailer.Stop()
 
 	expect := fmt.Sprintf(
-		"\x1b[31m%s\x1b[0m: foobar\n",
+		"\x1b[%dm%*s\x1b[0m: foobar\n",
+		31, // eq 2nd args on newTailer()
+		10, // eq 3rd args on newTailer()
 		path.Base(testfile.Name()),
 	)
 
 	if expect != output.String() {
-		t.Fatal("hogehoge")
+		t.Fatal("Incorrect display")
 	}
 }
 
 func revertDefault() {
 	colorableOutput = defaultOutput
-	seekInfoOnStart = defaultSeekInfo
 }
