@@ -11,6 +11,8 @@ import (
 )
 
 var (
+	// red, green, yellow, magenta, cyan
+	ansiColorCodes  = [...]int{31, 32, 33, 35, 36}
 	seekInfoOnStart = &tail.SeekInfo{Offset: 0, Whence: os.SEEK_END}
 	colorableOutput = colorable.NewColorableStdout()
 )
@@ -63,4 +65,19 @@ func (t Tailer) Do() {
 
 func (t Tailer) name() string {
 	return path.Base(t.Filename)
+}
+
+func getColorCode(index int) int {
+	return ansiColorCodes[index%len(ansiColorCodes)]
+}
+
+func maximumNameLength(filenames []string) int {
+	max := 0
+	for _, name := range filenames {
+		base := path.Base(name)
+		if len(base) > max {
+			max = len(base)
+		}
+	}
+	return max
 }
