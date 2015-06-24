@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path"
+	"path/filepath"
 	"testing"
 	"time"
 )
@@ -77,7 +77,7 @@ func TestTailerDo(t *testing.T) {
 		"\x1b[%dm%*s\x1b[0m: foobar\n",
 		31, // eq 2nd args on newTailer()
 		10, // eq 3rd args on newTailer()
-		path.Base(testfile.Name()),
+		filepath.Base(testfile.Name()),
 	)
 
 	if expect != output.String() {

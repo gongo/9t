@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path"
+	"path/filepath"
 
 	"github.com/ActiveState/tail"
 	"github.com/mattn/go-colorable"
@@ -64,7 +64,7 @@ func (t Tailer) Do() {
 }
 
 func (t Tailer) name() string {
-	return path.Base(t.Filename)
+	return filepath.Base(t.Filename)
 }
 
 func getColorCode(index int) int {
@@ -74,7 +74,7 @@ func getColorCode(index int) int {
 func maximumNameLength(filenames []string) int {
 	max := 0
 	for _, name := range filenames {
-		base := path.Base(name)
+		base := filepath.Base(name)
 		if len(base) > max {
 			max = len(base)
 		}
