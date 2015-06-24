@@ -69,7 +69,7 @@ func TestTailerDo(t *testing.T) {
 
 	interval := time.Tick(100 * time.Millisecond)
 	<-interval
-	testfile.WriteString("foobar")
+	testfile.WriteString("foobar\n")
 	<-interval
 	tailer.Stop()
 
