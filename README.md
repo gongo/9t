@@ -4,14 +4,20 @@
 [![Build Status](https://travis-ci.org/gongo/9t.svg?branch=master)](https://travis-ci.org/gongo/9t)
 [![Coverage Status](https://coveralls.io/repos/gongo/9t/badge.svg?branch=master)](https://coveralls.io/r/gongo/9t?branch=master)
 
-9t (nine-tailed fox in Japanese) is multi-file tailer (like `tail -f a.log b.log ...`).
+9t (nine-tailed fox in Japanese) is a multi-file tailer (like `tail -f a.log b.log ...`).
 
-Demo
+Usage
 ------------------------------
+
+```
+$ 9t file1 [file2 ...]
+```
+
+### Demo
 
 ![Demo](./images/9t.gif)
 
-1. Preparation
+1. Preparation for demo
 
     ```sh
     $ yukari() { echo '世界一かわいいよ!!' }
