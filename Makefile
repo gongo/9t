@@ -15,8 +15,7 @@ XC_OUTPUT = "$(BUILD_DIR)/{{.OS}}_{{.Arch}}/{{.Dir}}"
 
 
 setup:
-	gox -os $(XC_OS) -arch $(XC_ARCH) -build-toolchain
-	go get github.com/tcnksm/ghr
+	go get -u github.com/tcnksm/ghr
 
 build:
 	rm -rf $(BUILD_DIR)
