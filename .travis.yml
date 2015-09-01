@@ -1,7 +1,6 @@
 language: go
 go:
-  - 1.4
-  - tip
+  - 1.5
 
 install:
   - go get github.com/ActiveState/tail
