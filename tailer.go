@@ -17,12 +17,16 @@ var (
 	colorableOutput = colorable.NewColorableStdout()
 )
 
+//Tailer contains watches tailed files and contains per-file output parameters
 type Tailer struct {
 	*tail.Tail
 	colorCode int
 	maxWidth  int
 }
 
+//NewTailers creates slice of Tailers from file names.
+//Colors of file names are cycled through the list.
+//maxWidth is a maximum widht of passed file names, for nice alignment
 func NewTailers(filenames []string) []*Tailer {
 	maxLength := maximumNameLength(filenames)
 	ts := make([]*Tailer, len(filenames))
@@ -57,9 +61,13 @@ func newTailer(filename string, colorCode int, maxWidth int) (*Tailer, error) {
 	}, nil
 }
 
+//Do formats, colors and writes to stdout appended lines when they happen, exiting on write error
 func (t Tailer) Do() {
 	for line := range t.Lines {
-		fmt.Fprintf(colorableOutput, "\x1b[%dm%*s\x1b[0m: %s\n", t.colorCode, t.maxWidth, t.name(), line.Text)
+		_, err := fmt.Fprintf(colorableOutput, "\x1b[%dm%*s\x1b[0m: %s\n", t.colorCode, t.maxWidth, t.name(), line.Text)
+		if err != nil {
+			return
+		}
 	}
 }
 
