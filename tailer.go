@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/ActiveState/tail"
+	"github.com/hpcloud/tail"
 	"github.com/mattn/go-colorable"
 )
 
