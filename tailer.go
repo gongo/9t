@@ -64,7 +64,10 @@ func newTailer(filename string, colorCode int, maxWidth int) (*Tailer, error) {
 //Do formats, colors and writes to stdout appended lines when they happen, exiting on write error
 func (t Tailer) Do() {
 	for line := range t.Lines {
-		fmt.Fprintf(colorableOutput, "\x1b[%dm%*s\x1b[0m: %s\n", t.colorCode, t.maxWidth, t.name(), line.Text)
+		_, err := fmt.Fprintf(colorableOutput, "\x1b[%dm%*s\x1b[0m: %s\n", t.colorCode, t.maxWidth, t.name(), line.Text)
+		if err != nil {
+			return
+		}
 	}
 }
 
