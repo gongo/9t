@@ -3,7 +3,7 @@ go:
   - 1.5
 
 install:
-  - go get github.com/ActiveState/tail
+  - go get github.com/hpcloud/tail
   - go get github.com/mattn/go-colorable
   - go get github.com/mattn/go-runewidth
   - go get github.com/axw/gocov/gocov
