@@ -8,6 +8,7 @@ import (
 
 	"github.com/hpcloud/tail"
 	"github.com/mattn/go-colorable"
+	"github.com/mattn/go-runewidth"
 )
 
 var (
@@ -83,8 +84,9 @@ func maximumNameLength(filenames []string) int {
 	max := 0
 	for _, name := range filenames {
 		base := filepath.Base(name)
-		if len(base) > max {
-			max = len(base)
+		width := runewidth.StringWidth(base)
+		if width > max {
+			max = width
 		}
 	}
 	return max
