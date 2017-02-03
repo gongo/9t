@@ -88,3 +88,22 @@ func TestTailerDo(t *testing.T) {
 func revertDefault() {
 	colorableOutput = defaultOutput
 }
+
+func TestMaximumNameLength(t *testing.T) {
+	ns := []struct {
+		name   string
+		length int
+	}{
+		{"a", 1},
+		{"ab", 2},
+		{"世界一かわいいよ", 8},
+		{"/p/t/very_very_long_base", 19}}
+	names := make([]string, 4)
+	for _, n := range ns {
+		names = append(names, n.name)
+		cl := maximumNameLength(names)
+		if n.length != cl {
+			t.Fatalf("Incorrect: Maximum name length: expect(%d) actual(%d)", n.length, cl)
+		}
+	}
+}
