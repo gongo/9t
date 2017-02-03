@@ -30,10 +30,6 @@ func TestNewTailers(t *testing.T) {
 		t.Fatalf("Incorrect: tailers count expect(%d) actual(%d)", len(names), len(tailers))
 	}
 
-	if tailers[0].maxWidth != 19 { // len("very_very_long_base")
-		t.Fatalf("Incorrect: maximum name length: expect(%d) actual(%d)", 19, tailers[0].maxWidth)
-	}
-
 	if tailers[0].colorCode != ansiColorCodes[0] {
 		t.Fatal("Incorrect color code at 1st file")
 	}
@@ -96,6 +92,7 @@ func TestMaximumNameLength(t *testing.T) {
 	}{
 		{"a", 1},
 		{"ab", 2},
+		{"/very/very/long/path/but/base/is/short", 5},
 		{"世界一かわいいよ", 16},
 		{"/p/t/very_very_long_base", 19}}
 	names := make([]string, 4)
