@@ -96,7 +96,7 @@ func TestMaximumNameLength(t *testing.T) {
 	}{
 		{"a", 1},
 		{"ab", 2},
-		{"世界一かわいいよ", 8},
+		{"世界一かわいいよ", 16},
 		{"/p/t/very_very_long_base", 19}}
 	names := make([]string, 4)
 	for _, n := range ns {
