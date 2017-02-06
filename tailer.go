@@ -8,6 +8,7 @@ import (
 
 	"github.com/hpcloud/tail"
 	"github.com/mattn/go-colorable"
+	"github.com/mattn/go-runewidth"
 )
 
 var (
@@ -82,10 +83,17 @@ func getColorCode(index int) int {
 func maximumNameLength(filenames []string) int {
 	max := 0
 	for _, name := range filenames {
-		base := filepath.Base(name)
-		if len(base) > max {
-			max = len(base)
+		if current := displayFilenameLength(name); current > max {
+			max = current
 		}
 	}
 	return max
+}
+
+func displayFilename(filename string) string {
+	return filepath.Base(filename)
+}
+
+func displayFilenameLength(filename string) int {
+	return runewidth.StringWidth(displayFilename(filename))
 }
