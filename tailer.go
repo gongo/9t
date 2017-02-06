@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"strings"
+
 	"github.com/hpcloud/tail"
 	"github.com/mattn/go-colorable"
 	"github.com/mattn/go-runewidth"
@@ -22,7 +24,7 @@ var (
 type Tailer struct {
 	*tail.Tail
 	colorCode int
-	maxWidth  int
+	padding   string
 }
 
 //NewTailers creates slice of Tailers from file names.
@@ -55,17 +57,26 @@ func newTailer(filename string, colorCode int, maxWidth int) (*Tailer, error) {
 		return nil, err
 	}
 
+	dispNameLength := displayFilenameLength(filename)
+
 	return &Tailer{
 		Tail:      t,
 		colorCode: colorCode,
-		maxWidth:  maxWidth,
+		padding:   strings.Repeat(" ", maxWidth-dispNameLength),
 	}, nil
 }
 
 //Do formats, colors and writes to stdout appended lines when they happen, exiting on write error
 func (t Tailer) Do() {
 	for line := range t.Lines {
-		_, err := fmt.Fprintf(colorableOutput, "\x1b[%dm%*s\x1b[0m: %s\n", t.colorCode, t.maxWidth, t.name(), line.Text)
+		_, err := fmt.Fprintf(
+			colorableOutput,
+			"\x1b[%dm%s%s\x1b[0m: %s\n",
+			t.colorCode,
+			t.padding,
+			t.name(),
+			line.Text,
+		)
 		if err != nil {
 			return
 		}
