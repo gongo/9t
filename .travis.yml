@@ -3,8 +3,9 @@ go:
   - 1.5
 
 install:
-  - go get github.com/ActiveState/tail
+  - go get github.com/hpcloud/tail
   - go get github.com/mattn/go-colorable
+  - go get github.com/mattn/go-runewidth
   - go get github.com/axw/gocov/gocov
   - go get github.com/mattn/goveralls
   - if ! go get code.google.com/p/go.tools/cmd/cover; then go get golang.org/x/tools/cmd/cover; fi
