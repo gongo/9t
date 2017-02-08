@@ -2,13 +2,13 @@ package ninetail
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 
 	"strings"
 
 	"github.com/hpcloud/tail"
-	"github.com/mattn/go-colorable"
 	"github.com/mattn/go-runewidth"
 )
 
@@ -16,7 +16,6 @@ var (
 	// red, green, yellow, magenta, cyan
 	ansiColorCodes  = [...]int{31, 32, 33, 35, 36}
 	seekInfoOnStart = &tail.SeekInfo{Offset: 0, Whence: os.SEEK_END}
-	colorableOutput = colorable.NewColorableStdout()
 )
 
 //Tailer contains watches tailed files and contains per-file output parameters
@@ -66,10 +65,10 @@ func newTailer(filename string, colorCode int, maxWidth int) (*Tailer, error) {
 }
 
 //Do formats, colors and writes to stdout appended lines when they happen, exiting on write error
-func (t Tailer) Do() {
+func (t Tailer) Do(output io.Writer) {
 	for line := range t.Lines {
 		_, err := fmt.Fprintf(
-			colorableOutput,
+			output,
 			"\x1b[%dm%s%s\x1b[0m: %s\n",
 			t.colorCode,
 			t.padding,
