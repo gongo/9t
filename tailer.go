@@ -2,7 +2,6 @@ package ninetail
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 
@@ -30,20 +29,20 @@ type Tailer struct {
 //NewTailers creates slice of Tailers from file names.
 //Colors of file names are cycled through the list.
 //maxWidth is a maximum widht of passed file names, for nice alignment
-func NewTailers(filenames []string) []*Tailer {
+func NewTailers(filenames []string) ([]*Tailer, error) {
 	maxLength := maximumNameLength(filenames)
 	ts := make([]*Tailer, len(filenames))
 
 	for i, filename := range filenames {
 		t, err := newTailer(filename, getColorCode(i), maxLength)
 		if err != nil {
-			log.Fatal(err)
+			return nil, err
 		}
 
 		ts[i] = t
 	}
 
-	return ts
+	return ts, nil
 }
 
 func newTailer(filename string, colorCode int, maxWidth int) (*Tailer, error) {
