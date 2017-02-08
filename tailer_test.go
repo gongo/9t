@@ -3,19 +3,14 @@ package ninetail
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"io/ioutil"
-	"os"
 	"path/filepath"
-	"regexp"
-	"strings"
 	"sync"
 	"testing"
 	"time"
-)
 
-var (
-	ansiColorRegex = regexp.MustCompile("^\x1b\\[[0-9]+m(.*)\x1b\\[0m: (.*)$")
-	defaultOutput  = colorableOutput
+	"github.com/mattn/go-colorable"
 )
 
 func TestNewTailers(t *testing.T) {
@@ -28,7 +23,10 @@ func TestNewTailers(t *testing.T) {
 		"/p/var/log/test.log",
 	}
 
-	tailers := NewTailers(names)
+	tailers, err := NewTailers(names)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	if len(tailers) != len(names) {
 		t.Fatalf("Incorrect: tailers count expect(%d) actual(%d)", len(names), len(tailers))
@@ -47,92 +45,43 @@ func TestNewTailers(t *testing.T) {
 	}
 }
 
-func TestTailerDoForLinesAreNiceAligned(t *testing.T) {
-	// Stubbing output
-	output := new(bytes.Buffer)
-	colorableOutput = output
-	defer revertDefault()
-
-	dir, err := ioutil.TempDir("", "ninetail")
+func TestTailerDo(t *testing.T) {
+	file, err := ioutil.TempFile("", "ninetail_tailer_do")
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.RemoveAll(dir)
+	defer file.Close()
 
-	bases := []string{
-		"test_tailer_do.log",
-		"short.txt",
-		"世界一かわいいよ.log",
+	basename := filepath.Base(file.Name())
+	maxLength := len(basename) + 20 // 20 = padding
+
+	tailer, err := newTailer(file.Name(), 32, maxLength) // 32 = green
+	if err != nil {
+		t.Fatal(err)
 	}
-	files := make([]*os.File, len(bases))
-	for i, name := range bases {
-		// Create test file
-		filename := filepath.Join(dir, name)
-		f, err := os.Create(filename)
-		if err != nil {
-			t.Fatal(err)
-		}
-		files[i] = f
-	}
+
+	output := new(bytes.Buffer)
 
 	var wg sync.WaitGroup
-	tailers := NewTailers(getFilenames(files))
-	for _, t := range tailers {
-		wg.Add(1)
-		go func(t *Tailer) {
-			t.Do()
-			wg.Done()
-		}(t)
-	}
+	wg.Add(1)
+	go func(t *Tailer, output io.Writer) {
+		tailer.Do(colorable.NewNonColorable(output))
+		wg.Done()
+	}(tailer, output)
 
-	// ^^;)
+	// Simulate to `echo line >> ninetail_tailer_do`
 	interval := time.Tick(100 * time.Millisecond)
 	<-interval
-	fmt.Fprintf(files[0], "foobar\n")
-	<-interval
-	fmt.Fprintf(files[2], "その作業安全ですかと言える社風\n")
-	<-interval
-	fmt.Fprintf(files[1], "PPAP = Perfect PHP As PHP\n")
+	fmt.Fprint(file, "line\n")
 	<-interval
 
-	for _, t := range tailers {
-		t.Stop()
-	}
+	tailer.Stop()
 	wg.Wait()
 
-	expect := `  test_tailer_do.log: foobar
-世界一かわいいよ.log: その作業安全ですかと言える社風
-           short.txt: PPAP = Perfect PHP As PHP
-`
-	actual := stripAnsiColorCode(output.String())
+	expect := fmt.Sprintf("                    %s: line\n", basename)
+	actual := output.String()
 
 	if expect != actual {
-		t.Fatal("Incorrect align")
+		t.Fatal("Bad padding or line text")
 	}
-}
-
-func revertDefault() {
-	colorableOutput = defaultOutput
-}
-
-func getFilenames(files []*os.File) []string {
-	filenames := make([]string, len(files))
-	for i, file := range files {
-		filenames[i] = file.Name()
-	}
-	return filenames
-}
-
-func stripAnsiColorCode(text string) string {
-	stripped := ""
-
-	for _, line := range strings.Split(text, "\n") {
-		s := ansiColorRegex.FindStringSubmatch(line)
-
-		if s != nil { // nil is empty line
-			stripped += s[1] + ": " + s[2] + "\n"
-		}
-	}
-
-	return stripped
 }
