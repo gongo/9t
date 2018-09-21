@@ -49,3 +49,17 @@ func (n *NineTail) Run() {
 
 	wg.Wait()
 }
+
+func (n *NineTail) Stop() {
+	var wg sync.WaitGroup
+
+	for _, t := range n.tailers {
+		wg.Add(1)
+		go func(t *Tailer) {
+			t.Stop()
+			wg.Done()
+		}(t)
+	}
+
+	wg.Wait()
+}
