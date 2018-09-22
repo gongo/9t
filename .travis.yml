@@ -2,6 +2,10 @@ language: go
 go:
   - 1.11.x
 
+branches:
+  only:
+    - master
+
 install:
   - go get github.com/hpcloud/tail
   - go get github.com/mattn/go-colorable
